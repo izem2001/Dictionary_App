@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sozluk_uygulamasi/DetaySayfa.dart';
+import 'package:sozluk_uygulamasi/Kelimelerdao.dart';
 
 import 'Kelimeler.dart';
 
@@ -41,19 +42,15 @@ class _AnasayfaState extends State<Anasayfa> {
   String aramaKelimesi = "";
 
   Future<List<Kelimeler>> tumKelimelerGoster() async {
-    var kelimelerListesi = <Kelimeler>[];
-    var k1 = Kelimeler(1, "Dog", "Köpek");
-    var k2 = Kelimeler(2, "Fish", "Balık");
-    var k3 = Kelimeler(3, "Table", "Masa");
-
-    kelimelerListesi.add(k1);
-    kelimelerListesi.add(k2);
-    kelimelerListesi.add(k3);
-
+    var kelimelerListesi = await Kelimelerdao().tumKelimeler();
     return kelimelerListesi;
 
   }
+  Future<List<Kelimeler>> aramaYap(String aramaKelimesi) async {
+    var kelimelerListesi = await Kelimelerdao().kelimeAra(aramaKelimesi);
+    return kelimelerListesi;
 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +89,7 @@ class _AnasayfaState extends State<Anasayfa> {
         ],
       ),
       body: FutureBuilder<List<Kelimeler>>(
-        future: tumKelimelerGoster(),
+        future: aramaYapiliyorMu ?  aramaYap(aramaKelimesi): tumKelimelerGoster(),
         builder: (context,snapshot){
           if(snapshot.hasData){
             var kelimelerListesi = snapshot.data;
